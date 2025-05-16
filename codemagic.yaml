@@ -9,8 +9,9 @@ workflows:
         PATH: "$PATH:$HOME/Library/Android/sdk/platform-tools"
     scripts:
       - name: Accept Android SDK Licenses
-        script: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
-      - name: Install Build Dependencies
+        script: |
+          yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+      - name: Install system dependencies
         script: |
           brew install pkg-config
           brew install sdl2 sdl2_image sdl2_ttf sdl2_mixer
