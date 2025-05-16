@@ -1,19 +1,21 @@
 workflows:
   android-kivy-build:
     name: Android Kivy Build
+    machine:
+      type: mac_mini_m2
     environment:
       vars:
-        ANDROID_SDK_ROOT: /Users/builder/.buildozer/android/platform/android-sdk
-      # Mac mini M2 için ortam ayarları
-      flutter: stable
-      os: macos
+        ANDROID_HOME: "$HOME/Library/Android/sdk"
+        PATH: "$PATH:$HOME/Library/Android/sdk/platform-tools"
     scripts:
-      - name: Accept Android SDK licenses
-        script: yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
-      - name: Update SDK packages
-        script: $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --update
-      - name: Build APK with Buildozer
-        script: buildozer android debug
+      - name: Accept Android SDK Licenses
+        script: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+      - name: Install Build Dependencies
+        script: |
+          brew install pkg-config
+          brew install sdl2 sdl2_image sdl2_ttf sdl2_mixer
+      - name: Build APK
+        script: |
+          buildozer android debug
     artifacts:
-      - app/build/outputs/**/*.apk
-
+      - build/bin/*.apk
