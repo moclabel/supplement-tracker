@@ -1,8 +1,8 @@
 workflows:
   android-kivy-build:
     name: Android Kivy Build
-    machine:
-      type: mac_mini_m2
+    os: macos
+    os_version: "13.0"  # veya kullandığın macOS sürümü
     environment:
       vars:
         ANDROID_HOME: "$HOME/Library/Android/sdk"
