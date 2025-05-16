@@ -1,10 +1,17 @@
 [app]
+
 title = SupplementTracker
 package.name = supplementtracker
-package.domain = org.example
-source.include_exts = py,png,json,kv
-requirements = python3,kivy,PyDatePicker
+package.domain = org.moclabel
+source.dir = .
+source.include_exts = py,png,jpg,kv,atlas
+version = 1.0
+requirements = python3,kivy
 orientation = portrait
-android.api = 31
-android.minapi = 21
-icon.filename = icon.png
+
+# Eğer "main.py" dışında bir adınız varsa onu da belirtin
+# örnek: entrypoint = main.py
+
+[buildozer]
+log_level = 2
+warn_on_root = 1
