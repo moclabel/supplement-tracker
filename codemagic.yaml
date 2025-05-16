@@ -8,21 +8,20 @@ workflows:
         JAVA_HOME: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
 
     scripts:
-      - echo "Python 3.10 ayarlanıyor..."
+      - echo "Python 3.10.13 kuruluyor..."
+      - pyenv install 3.10.13
       - pyenv global 3.10.13
+      - python -m ensurepip --upgrade
       - pip install --upgrade pip
       - pip install Cython==0.29.36
       - pip install buildozer==1.5.0
       - pip install virtualenv
 
-      - echo "Yapı dizinine geçiliyor..."
-      - cd $FCI_BUILD_DIR
-
-      - echo "Android SDK bileşenleri yükleniyor..."
+      - echo "Android SDK lisansları kabul ediliyor..."
       - yes | sdkmanager --licenses
       - sdkmanager "build-tools;36.0.0" "platforms;android-33" "ndk;25.1.8937393"
 
-      - echo "APK oluşturuluyor..."
+      - echo "APK derleniyor..."
       - buildozer android debug
 
     artifacts:
