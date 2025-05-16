@@ -1,33 +1,33 @@
 workflows:
   android-kivy-build:
-    name: Build Kivy APK
+    name: Build Kivy Android APK
+    max_build_duration: 60
     environment:
       vars:
-        PYTHON_VERSION: 3.10.13
-        JDK_VERSION: 17
-        ANDROID_SDK_ROOT: /Users/builder/Library/Android/sdk
-      python: 3.10.13
-      java: 17
+        ANDROID_HOME: /Users/builder/Library/Android/sdk
+        JAVA_HOME: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+      # pyenv global ayarı ile python 3.10 kullanılabilir
+      scripts:
+        - pyenv global 3.10.13
+        - pip install --upgrade pip
+        - pip install Cython==0.29.36
+        - pip install buildozer==1.5.0
+        - pip install virtualenv
+
     scripts:
-      - name: Setup Python and Buildozer
-        script: |
-          pip install --upgrade pip
-          pip install cython
-          pip install buildozer
-      - name: Initialize buildozer
-        script: |
-          if [ ! -f buildozer.spec ]; then
-            buildozer init
-          fi
-      - name: Install Android SDK Requirements
-        script: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2" || true
-      - name: Build the APK
-        script: |
-          buildozer -v android debug
+      - echo "Yapı dizinine geçiliyor..."
+      - cd $FCI_BUILD_DIR
+      - echo "Gerekli Android SDK bileşenleri yükleniyor..."
+      - yes | sdkmanager --licenses
+      - sdkmanager "build-tools;36.0.0" "platforms;android-33" "ndk;25.1.8937393"
+      - echo "Buildozer ile APK oluşturuluyor..."
+      - buildozer android debug
+
     artifacts:
-      - build/*.apk
+      - app/build/outputs/**/*.apk
+      - build/**/outputs/**/*.apk
+      - *.apk
+
     publishing:
       email:
         recipients:
