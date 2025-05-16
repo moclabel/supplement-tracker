@@ -1,9 +1,8 @@
 workflows:
   kivy-android-build:
-    name: Kivy APK Build (Linux)
+    name: Build Kivy APK with Buildozer
     max_build_duration: 60
     environment:
-      os: linux
       vars:
         ANDROID_HOME: /opt/android-sdk
     scripts:
