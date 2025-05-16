@@ -1,10 +1,8 @@
 workflows:
   android-kivy-build:
     name: Build Kivy Android APK
-    max_build_duration: 60          # dakika cinsinden zaman limiti
+    max_build_duration: 60       # dakika cinsinden zaman limiti
     environment:
-      os: linux
-      player: android
       vars:
         ANDROID_API_LEVEL: 31
         ANDROID_BUILD_TOOLS_VERSION: "30.0.3"
@@ -20,7 +18,6 @@ workflows:
           source $HOME/.bashrc
       - name: Verify buildozer.spec
         script: |
-          # repodaki spec dosyanızı kontrol eder
           cat buildozer.spec
       - name: Run Buildozer
         script: |
@@ -32,5 +29,3 @@ workflows:
       email:
         recipients:
           - you@example.com
-        on_success: always
-        on_failure: always
