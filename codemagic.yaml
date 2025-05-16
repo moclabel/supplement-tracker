@@ -1,27 +1,40 @@
 workflows:
   android-kivy-build:
+    name: Android Kivy Build on Mac M2
     environment:
       vars:
-        ANDROID_HOME: "$HOME/Library/Android/sdk"
-        PATH: "$PATH:$HOME/Library/Android/sdk/platform-tools"
-      node: stable
-      flutter: stable
+        ANDROID_SDK_ROOT: /Users/builder/Library/Android/sdk
+        JAVA_HOME: /usr/local/opt/openjdk@8/libexec/openjdk.jdk/Contents/Home
+      # MacOS runner kullanıyoruz
+      os: macos
+      os_version: '13.0'  # macOS Ventura veya ihtiyaç duyduğun versiyonu yazabilirsin
     scripts:
+      - name: Setup Java 8
+        script: |
+          echo "Setting JAVA_HOME to Java 8 path"
+          export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+          export PATH=$JAVA_HOME/bin:$PATH
+          java -version
+
       - name: Accept Android SDK licenses
         script: |
-          yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+          yes | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --licenses
+
       - name: Install dependencies
         script: |
-          brew install pkg-config sdl2 sdl2_image sdl2_ttf sdl2_mixer
+          brew install pkg-config cairo pango libpng jpeg giflib
+          pip install -r requirements.txt
+
       - name: Build APK
         script: |
           buildozer android debug
+
     artifacts:
-      - build/bin/*.apk
+      - app/build/bin/*.apk
+
     publishing:
       email:
         recipients:
           - your-email@example.com
-
-macos:
-  xcode: latest
+        on_success: always
+        on_failure: always
