@@ -1,22 +1,22 @@
 workflows:
   android-kivy-build:
-    name: Build Kivy Android APK
+    name: Build Kivy APK with Buildozer
     max_build_duration: 60
     environment:
-      flutter: "false"
-      xcode: "false"
+      vars:
+        ANDROID_HOME: /opt/android-sdk
     scripts:
       - name: Install system dependencies
         script: |
           sudo apt-get update
           sudo apt-get install -y openjdk-11-jdk unzip zlib1g-dev python3-pip python3-dev git
-      - name: Install Buildozer & Kivy
+      - name: Install Buildozer and Kivy
         script: |
           pip3 install --user buildozer kivy
           export PATH=$PATH:$HOME/.local/bin
-      - name: Run Buildozer
+      - name: Build APK with Buildozer
         script: |
-          buildozer --version
+          buildozer init || true
           buildozer android debug
     artifacts:
       - buildozer/bin/*.apk
