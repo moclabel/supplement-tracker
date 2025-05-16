@@ -6,6 +6,7 @@ workflows:
       vars:
         ANDROID_HOME: /Users/builder/Library/Android/sdk
         JAVA_HOME: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+        PATH: /Users/builder/Library/Android/sdk/cmdline-tools/latest/bin:$PATH
 
     scripts:
       - echo "Python 3.10.13 kuruluyor..."
@@ -19,6 +20,7 @@ workflows:
 
       - echo "Android SDK lisansları kabul ediliyor..."
       - yes | sdkmanager --licenses
+
       - sdkmanager "build-tools;36.0.0" "platforms;android-33" "ndk;25.1.8937393"
 
       - echo "APK derleniyor..."
