@@ -4,10 +4,7 @@ workflows:
     environment:
       vars:
         ANDROID_SDK_ROOT: /Users/builder/Library/Android/sdk
-        JAVA_HOME: /usr/local/opt/openjdk@8/libexec/openjdk.jdk/Contents/Home
-      # MacOS runner kullanıyoruz
-      os: macos
-      os_version: '13.0'  # macOS Ventura veya ihtiyaç duyduğun versiyonu yazabilirsin
+        JAVA_HOME: /usr/libexec/java_home -v 1.8
     scripts:
       - name: Setup Java 8
         script: |
@@ -36,5 +33,3 @@ workflows:
       email:
         recipients:
           - your-email@example.com
-        on_success: always
-        on_failure: always
