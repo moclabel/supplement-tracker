@@ -1,22 +1,29 @@
 workflows:
   android-kivy-build:
-    name: Android Kivy Build
-    os: macos
-    os_version: "13.0"  # veya kullandığın macOS sürümü
     environment:
       vars:
         ANDROID_HOME: "$HOME/Library/Android/sdk"
         PATH: "$PATH:$HOME/Library/Android/sdk/platform-tools"
+      node: stable
+      flutter: stable
     scripts:
-      - name: Accept Android SDK Licenses
+      - name: Accept Android SDK licenses
         script: |
           yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
-      - name: Install system dependencies
+      - name: Install dependencies
         script: |
-          brew install pkg-config
-          brew install sdl2 sdl2_image sdl2_ttf sdl2_mixer
+          brew install pkg-config sdl2 sdl2_image sdl2_ttf sdl2_mixer
       - name: Build APK
         script: |
           buildozer android debug
     artifacts:
       - build/bin/*.apk
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        on_success: always
+        on_failure: always
+
+macos:
+  xcode: latest
