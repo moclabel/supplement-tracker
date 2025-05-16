@@ -1,23 +1,30 @@
 workflows:
-  kivy-macos-build:
-    name: Build APK on macOS (M2)
+  android-kivy-build:
+    name: Build APK with Buildozer
+    max_build_duration: 60
     environment:
-      xcode: latest
+      vars:
+        LC_ALL: "en_US.UTF-8"
+        LANG: "en_US.UTF-8"
+        ANDROID_HOME: "$HOME/Library/Android/sdk"
+        PATH: "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
     scripts:
-      - name: Install dependencies via Homebrew
+      - name: Install Python & system deps
         script: |
-          brew install python3
-          pip3 install --upgrade pip setuptools wheel
-          pip3 install --user buildozer cython kivy
-          echo 'export PATH=$PATH:$HOME/Library/Python/3.*/bin' >> $HOME/.bash_profile
-      - name: Install Android SDK via Homebrew
+          brew install python@3.10
+          python3.10 -m pip install --upgrade pip
+          python3.10 -m pip install buildozer Cython
+
+      - name: Install Android SDK & accept licenses
         script: |
-          brew install --cask android-sdk
-          echo 'export ANDROID_HOME=/usr/local/share/android-sdk' >> $HOME/.bash_profile
-          source $HOME/.bash_profile
-      - name: Build APK
+          brew install --cask android-commandlinetools
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+      - name: Build APK with Buildozer
         script: |
-          export PATH=$PATH:$HOME/Library/Python/3.*/bin
           buildozer android debug
+
     artifacts:
-      - buildozer/bin/*.apk
+      - build/*.apk
+
