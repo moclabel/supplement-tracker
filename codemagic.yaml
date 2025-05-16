@@ -5,8 +5,8 @@ workflows:
     environment:
       vars:
         ANDROID_SDK_ROOT: /Users/builder/Library/Android/sdk
-        JAVA_HOME: /Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home
-        # Yukarıdaki Java yolunu ` /usr/libexec/java_home -v 1.8` komutu çıktısına göre ayarlayın
+        JAVA_HOME: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+        SKIP_JDK_VERSION_CHECK: "1"
     scripts:
       - name: Update Homebrew and install dependencies
         script: |
@@ -15,10 +15,10 @@ workflows:
       - name: Install Python 3.10
         script: |
           brew install python@3.10
-      - name: Setup Java 8 environment
+      - name: Setup Java 17 environment
         script: |
           export JAVA_HOME=$JAVA_HOME
-          echo "JAVA_HOME set to $JAVA_HOME"
+          java -version
       - name: Accept Android SDK licenses
         script: |
           yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
