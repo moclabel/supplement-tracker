@@ -1,25 +1,22 @@
 workflows:
   android-kivy-build:
     name: Build Kivy Android APK
-    max_build_duration: 60
+    max_build_duration: 60          # dakika cinsinden zaman limiti
     environment:
-      vars:
-        ANDROID_API_LEVEL: 31
-        ANDROID_BUILD_TOOLS_VERSION: "30.0.3"
+      android:
+        api-level: 31               # SDK API seviyesi
+        build-tools: "30.0.3"       # Build tools versiyonu
+        ndk: "23b"                  # NDK versiyonu (auto da olabilir)
+        java: "openjdk11"           # JDK versiyonu
     scripts:
-      - name: Update packages & install system deps
-        script: |
-          apt-get update
-          apt-get install -y openjdk-11-jdk unzip zlib1g-dev python3-pip python3-dev git
-      - name: Install Python tools
+      - name: Install Python & Buildozer
         script: |
           pip3 install --user buildozer kivy PyDatePicker
-          echo 'export PATH=$PATH:$HOME/.local/bin' >> $HOME/.bashrc
-          source $HOME/.bashrc
-      - name: Verify buildozer.spec
-        script: cat buildozer.spec
+          echo 'export PATH=$PATH:$HOME/.local/bin' >> ~/.bashrc
+          source ~/.bashrc
       - name: Run Buildozer
-        script: buildozer --verbose android debug
+        script: |
+          buildozer --verbose android debug
     artifacts:
       - buildozer/bin/*.apk
       - buildozer/bin/*.aab
