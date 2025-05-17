@@ -6,35 +6,21 @@ workflows:
       vars:
         ANDROID_HOME: /Users/builder/Library/Android/sdk
         JAVA_HOME: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
-        PATH: /Users/builder/Library/Android/sdk/cmdline-tools/latest/bin:$PATH
-
+        PATH: /Users/builder/Library/Android/sdk/cmdline-tools/latest/bin:$PATH:$HOME/.pyenv/bin
     scripts:
-      - echo "Python 3.10.13 kuruluyor..."
-      - pyenv install 3.10.13 || true
+      - echo "pyenv ve Python ayarları yapılıyor..."
+      - export PATH="$HOME/.pyenv/bin:$PATH"
+      - eval "$(pyenv init --path)"
+      - eval "$(pyenv init -)"
+      - pyenv install -s 3.10.13
       - pyenv global 3.10.13
+      - python --version
+
+      - echo "pip güncelleniyor ve bağımlılıklar kuruluyor..."
       - python -m ensurepip --upgrade
-      - pip install --upgrade pip setuptools==65.5.1 wheel
-      - pip install Cython==0.29.36 buildozer==1.5.0 virtualenv
+      - pip install --upgrade pip
+      - pip install Cython==0.29.36
+      - pip install buildozer==1.5.0
+      - pip install virtualenv
 
       - echo "Android SDK lisansları kabul ediliyor..."
-      - yes | sdkmanager --licenses
-
-      - echo "Gerekli Android SDK araçları yükleniyor..."
-      - sdkmanager "build-tools;36.0.0" "platforms;android-33" "ndk;25.1.8937393"
-
-      - echo "APK derleniyor..."
-      - pyenv shell 3.10.13
-      - buildozer android debug
-
-    artifacts:
-      - "app/build/outputs/**/*.apk"
-      - "build/**/outputs/**/*.apk"
-      - "*.apk"
-
-    publishing:
-      email:
-        recipients:
-          - moclabel01@gmail.com
-        notify:
-          success: true
-          failure: true
