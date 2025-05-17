@@ -18,9 +18,12 @@ workflows:
 
       - echo "Android SDK lisansları kabul ediliyor..."
       - yes | sdkmanager --licenses
+
+      - echo "Gerekli Android SDK araçları yükleniyor..."
       - sdkmanager "build-tools;36.0.0" "platforms;android-33" "ndk;25.1.8937393"
 
       - echo "APK derleniyor..."
+      - pyenv shell 3.10.13
       - buildozer android debug
 
     artifacts:
