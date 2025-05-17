@@ -24,3 +24,23 @@ workflows:
       - pip install virtualenv
 
       - echo "Android SDK lisansları kabul ediliyor..."
+      - yes | sdkmanager --licenses
+
+      - echo "Gerekli SDK bileşenleri kuruluyor..."
+      - sdkmanager "build-tools;36.0.0" "platforms;android-33" "ndk;25.1.8937393"
+
+      - echo "APK derleniyor..."
+      - buildozer android debug
+
+    artifacts:
+      - "app/build/outputs/**/*.apk"
+      - "build/**/outputs/**/*.apk"
+      - "*.apk"
+
+    publishing:
+      email:
+        recipients:
+          - moclabel01@gmail.com
+        notify:
+          success: true
+          failure: true
