@@ -1,0 +1,70 @@
+format_version: '11'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+workflows:
+  android-kivy-build:
+    steps:
+      - activate-ssh-key@4: {}
+      - git-clone@10: {}
+
+      - script@1:
+          title: Setup pyenv and install Python 3.12.7
+          inputs:
+            content: |-
+              #!/bin/bash
+              set -ex
+
+              # pyenv kurulumu kontrolü
+              if ! command -v pyenv >/dev/null 2>&1; then
+                echo "pyenv yok, kuruluyor..."
+                curl https://pyenv.run | bash
+                export PATH="$HOME/.pyenv/bin:$PATH"
+                eval "$(pyenv init --path)"
+                eval "$(pyenv init -)"
+                eval "$(pyenv virtualenv-init -)"
+              else
+                echo "pyenv zaten kurulmuş"
+              fi
+
+              export PATH="$HOME/.pyenv/bin:$PATH"
+              eval "$(pyenv init --path)"
+              eval "$(pyenv init -)"
+
+              # Python 3.12.7 kurulumu
+              pyenv install -s 3.12.7
+              pyenv global 3.12.7
+
+              python -m ensurepip --upgrade
+              pip install --upgrade pip setuptools
+              pip install buildozer==1.5.0 Cython==0.29.36
+
+              # Patch: buildozer android.py distutils -> setuptools
+              python -c "
+import buildozer.targets.android as android;
+import setuptools._distutils.version as distutils_version;
+android.LooseVersion = distutils_version.LooseVersion
+print('Patch applied: distutils → setuptools in buildozer')"
+
+      - script@1:
+          title: Accept Android SDK licenses and install SDK components
+          inputs:
+            content: |-
+              #!/bin/bash
+              set -ex
+
+              export ANDROID_HOME=$HOME/Library/Android/sdk
+              export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+
+              yes | sdkmanager --licenses
+              sdkmanager "build-tools;36.0.0" "platforms;android-33" "ndk;25.1.8937393"
+
+      - script@1:
+          title: Build APK with Buildozer
+          inputs:
+            content: |-
+              #!/bin/bash
+              set -ex
+
+              buildozer android debug
+
+      - deploy-to-bitrise-io@1: {}
