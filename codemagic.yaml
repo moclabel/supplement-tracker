@@ -9,20 +9,15 @@ workflows:
         PATH: /Users/builder/Library/Android/sdk/cmdline-tools/latest/bin:$PATH
 
     scripts:
-      - echo "Python 3.10.13 kuruluyor ve seçiliyor..."
-      - pyenv install --skip-existing 3.10.13
+      - echo "Python 3.10.13 kuruluyor..."
+      - pyenv install 3.10.13 || true
       - pyenv global 3.10.13
-      - echo "Aktif Python versiyonu:"
-      - python --version   # Bu satır Python versiyonunu gösterir, 3.10.13 olmalı
       - python -m ensurepip --upgrade
-      - pip install --upgrade pip
-      - pip install Cython==0.29.36
-      - pip install buildozer==1.5.0
-      - pip install virtualenv
+      - pip install --upgrade pip setuptools==65.5.1 wheel
+      - pip install Cython==0.29.36 buildozer==1.5.0 virtualenv
 
       - echo "Android SDK lisansları kabul ediliyor..."
       - yes | sdkmanager --licenses
-
       - sdkmanager "build-tools;36.0.0" "platforms;android-33" "ndk;25.1.8937393"
 
       - echo "APK derleniyor..."
