@@ -9,9 +9,11 @@ workflows:
         PATH: /Users/builder/Library/Android/sdk/cmdline-tools/latest/bin:$PATH
 
     scripts:
-      - echo "Python 3.10.13 kuruluyor..."
-      - pyenv install 3.10.13
+      - echo "Python 3.10.13 kuruluyor ve seçiliyor..."
+      - pyenv install --skip-existing 3.10.13
       - pyenv global 3.10.13
+      - echo "Aktif Python versiyonu:"
+      - python --version   # Bu satır Python versiyonunu gösterir, 3.10.13 olmalı
       - python -m ensurepip --upgrade
       - pip install --upgrade pip
       - pip install Cython==0.29.36
